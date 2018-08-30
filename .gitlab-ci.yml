@@ -46,7 +46,7 @@ Build & Push to Registry 01:
     #At this time gitlab.com shared runner segfault when building the .Net application
     #(maybe not enough memory.) so I don't build it here..
     - docker info
-    - docker build -t $REGISTRY_SLASH:latest .
+    - docker build $REGISTRY_SLASH .
     - docker push $REGISTRY_SLASH
   when: manual
 #######################################################
