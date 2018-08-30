@@ -12,7 +12,7 @@ services:
   - docker:dind
 
 stages:
-  - check
+  
   - build
 ##  - test
   - deploy
@@ -22,22 +22,7 @@ stages:
 variables:
   dockerfile_dir: "$CI_PROJECT_DIR"
 
-Check PWD:
-  stage: check
-  script:
-#    - export DOCKER_HOST=$DOCKER_HOST_VAR
-#    - echo using DOCKER_HOST=$DOCKER_HOST
-    - docker info
-    - echo "$CI_COMMIT_REF_NAME"
-    - echo $CI_BUILD_REF
-    - echo $CI_BUILD_NAME
-    - echo $CI_BUILD_ID
-    - echo $CI_COMMIT_SHA
-    - echo $CI_JOB_ID
-    - echo $CI_PIPELINE_ID
-    - echo $COLON_TAG
-    - export COMMIT_TIME=$(date +"%Y%m%d")
-    - echo $COMMIT_TIME
+
 Build & Push to Registry 01:
   stage: build
   variables:
