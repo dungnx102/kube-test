@@ -51,63 +51,7 @@ Build & Push to Registry 01:
   when: manual
 #######################################################
 
-Build & Push to Registry 02:
-  stage: build
-  variables:
-    REGISTRY_SLASH: "$CI_REGISTRY_IMAGE/"
-    COLON_TAG: ":1.0.14"
-#    COLON_TAG: "$VER"
-  before_script:
-    - apk add --no-cache py-pip
-    - pip install docker-compose
 
-  script:
-    - echo $CI_BUILD_ID
-    - echo $CI_COMMIT_SHA
-    - echo $CI_JOB_ID
-    - echo $CI_PIPELINE_ID
-    - echo $COLON_TAG
-    - export COMMIT_TIME=$(date +"%Y%m%d")
-    - echo $COMMIT_TIME
-    - echo "Using gitlab registry $REGISTRY_SLASH and $COLON_TAG"
-    - docker login -u root -p $CI_BUILD_TOKEN $REGISTRY_SLASH
-    #At this time gitlab.com shared runner segfault when building the .Net application
-    #(maybe not enough memory.) so I don't build it here..
-    - docker info
-    - docker-compose -f docker-compose.yml build
-    - docker-compose -f docker-compose.yml push
-  when: manual
-#  except:
-#    - tags
-
-#Rajouter les tests ;)
-##Pull & deploy & test locally:
-##  stage: test
-##  variables:
-##    REGISTRY_SLASH: "$CI_REGISTRY_IMAGE/"
-##    COLON_TAG: ":1.0.0"
-##  script:
-##    - echo "Using gitlab registry $REGISTRY_SLASH and $COLON_TAG"
-##   - docker version
-##    - docker swarm init || true # if already a swarm
-##    - docker ps -a
-##    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $REGISTRY_SLASH
-#    - docker-compose -f docker-compose-gitlab-injob.yml pull
-#    - docker stack deploy vote -c docker-compose-gitlab-injob.yml
-##    - docker swarm init --advertise-addr eth0 || true
-##   - docker stack deploy -c traefik.yml traefik
-##    - docker-compose -f docker-stack-traefik.yml pull
-##    - docker stack deploy vote -c docker-stack-traefik.yml
-    #    - sleep 5
-    #YOU CAN MAKE YOUR TESTS HERE
-    #    - docker-compose -p test-vote -f docker-compose-tests.yml run newman
-##    #    - docker-compose -p test-vote -f docker-compose-tests.yml down
-##    - docker stack rm vote
-#  artifacts:
-#    paths:
-#      - tests/newman
-##  except:
-##    - tags
 
 Deploy to Swarm 01:
   stage: deploy
@@ -126,8 +70,6 @@ Deploy to Swarm 01:
     - 'printf "apiVersion: v1\nkind: Secret\n$(kubectl create secret docker-registry gitlab-registry --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD --docker-email=$GITLAB_USER_EMAIL -o yaml --dry-run)" | kubectl apply -f -'
     - sed 's/_APP_NAME_/'"$CI_PROJECT_NAME"'/g; s/_VERSION_/'"$CI_COMMIT_SHA"'/g' kubernetes.tpl.yml > kubernetes.yml;
     - kubectl apply -f kubernetes.yml
-  only:
-    - develop
   
   
 #######################################################
