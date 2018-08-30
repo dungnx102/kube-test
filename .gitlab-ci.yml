@@ -3,18 +3,41 @@
 variables:
   DOCKER_DRIVER: overlay
   REGISTRY_SLASH: "$CI_REGISTRY_IMAGE/"
-  CONTAINER_DEV_IMAGE: gitlab.truecloud.top/root/kube-test:$CI_COMMIT_SHA
+#  VER: ":1.0.12"
+  COLON_TAG: ":1.0.14"
+
+# image: registry.gitlab.com/build-images/docker:latest
 
 services:
   - docker:dind
 
 stages:
+  - check
   - build
+##  - test
   - deploy
+  - stop
+#  - doc
 
 variables:
   dockerfile_dir: "$CI_PROJECT_DIR"
 
+Check PWD:
+  stage: check
+  script:
+#    - export DOCKER_HOST=$DOCKER_HOST_VAR
+#    - echo using DOCKER_HOST=$DOCKER_HOST
+    - docker info
+    - echo "$CI_COMMIT_REF_NAME"
+    - echo $CI_BUILD_REF
+    - echo $CI_BUILD_NAME
+    - echo $CI_BUILD_ID
+    - echo $CI_COMMIT_SHA
+    - echo $CI_JOB_ID
+    - echo $CI_PIPELINE_ID
+    - echo $COLON_TAG
+    - export COMMIT_TIME=$(date +"%Y%m%d")
+    - echo $COMMIT_TIME
 Build & Push to Registry 01:
   stage: build
   variables:
@@ -26,36 +49,165 @@ Build & Push to Registry 01:
     - pip install docker-compose
 
   script:
-    - docker login -u root -p $CI_JOB_TOKEN gitlab.truecloud.top:4567
-    
-    - docker build --pull -t $CONTAINER_DEV_IMAGE .
-    - docker push $CONTAINER_DEV_IMAGE
-  only:
-    - develop
-    
+    - echo $CI_BUILD_ID
+    - echo $CI_COMMIT_SHA
+    - echo $CI_JOB_ID
+    - echo $CI_PIPELINE_ID
+    - echo $COLON_TAG
+    - export COMMIT_TIME=$(date +"%Y%m%d")
+    - echo $COMMIT_TIME
+    - echo "Using gitlab registry $REGISTRY_SLASH and $COLON_TAG"
+    - docker login -u root -p $CI_BUILD_TOKEN $REGISTRY_SLASH
+    #At this time gitlab.com shared runner segfault when building the .Net application
+    #(maybe not enough memory.) so I don't build it here..
+    - docker info
+    - docker-compose -f docker-compose.yml build
+    - docker-compose -f docker-compose.yml push
   when: manual
 #######################################################
 
+Build & Push to Registry 02:
+  stage: build
+  variables:
+    REGISTRY_SLASH: "$CI_REGISTRY_IMAGE/"
+    COLON_TAG: ":1.0.14"
+#    COLON_TAG: "$VER"
+  before_script:
+    - apk add --no-cache py-pip
+    - pip install docker-compose
 
+  script:
+    - echo $CI_BUILD_ID
+    - echo $CI_COMMIT_SHA
+    - echo $CI_JOB_ID
+    - echo $CI_PIPELINE_ID
+    - echo $COLON_TAG
+    - export COMMIT_TIME=$(date +"%Y%m%d")
+    - echo $COMMIT_TIME
+    - echo "Using gitlab registry $REGISTRY_SLASH and $COLON_TAG"
+    - docker login -u root -p $CI_BUILD_TOKEN $REGISTRY_SLASH
+    #At this time gitlab.com shared runner segfault when building the .Net application
+    #(maybe not enough memory.) so I don't build it here..
+    - docker info
+    - docker-compose -f docker-compose.yml build
+    - docker-compose -f docker-compose.yml push
+  when: manual
+#  except:
+#    - tags
 
+#Rajouter les tests ;)
+##Pull & deploy & test locally:
+##  stage: test
+##  variables:
+##    REGISTRY_SLASH: "$CI_REGISTRY_IMAGE/"
+##    COLON_TAG: ":1.0.0"
+##  script:
+##    - echo "Using gitlab registry $REGISTRY_SLASH and $COLON_TAG"
+##   - docker version
+##    - docker swarm init || true # if already a swarm
+##    - docker ps -a
+##    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $REGISTRY_SLASH
+#    - docker-compose -f docker-compose-gitlab-injob.yml pull
+#    - docker stack deploy vote -c docker-compose-gitlab-injob.yml
+##    - docker swarm init --advertise-addr eth0 || true
+##   - docker stack deploy -c traefik.yml traefik
+##    - docker-compose -f docker-stack-traefik.yml pull
+##    - docker stack deploy vote -c docker-stack-traefik.yml
+    #    - sleep 5
+    #YOU CAN MAKE YOUR TESTS HERE
+    #    - docker-compose -p test-vote -f docker-compose-tests.yml run newman
+##    #    - docker-compose -p test-vote -f docker-compose-tests.yml down
+##    - docker stack rm vote
+#  artifacts:
+#    paths:
+#      - tests/newman
+##  except:
+##    - tags
 
 Deploy to Swarm 01:
   stage: deploy
-  image: alpine
-  environment:
-    name: develop
-  
+  variables:
+    REGISTRY_SLASH: "$CI_REGISTRY_IMAGE/"
+    COLON_TAG: ":1.0.14"
+#    COLON_TAG: "$VER"
+  before_script:
+    - export SHELL=/bin/bash
+    - echo "Creation of Docker Swarm on PWD"
+    - echo $CI_COMMIT_REF_NAME
+    - echo $CI_BUILD_ID
+    - echo $CI_COMMIT_SHA
+    - echo $CI_JOB_ID
+    - echo $CI_PIPELINE_ID
+    - echo $COLON_TAG
+    - export COMMIT_TIME=$(date +"%Y%m%d")
+    - echo $COMMIT_TIME
+    #You need to set-up DOCKER_HOST_VAR in the Settings of your Gitlab Pipeline in secret variable
+    #- echo using $PWD_URL
+    - export DOCKER_TLS_VERIFY=1
+    - export DOCKER_HOST=tcp://172.16.117.119:2376
+    - export DOCKER_CERT_PATH=/tmp
+    - echo $TLSCACERT
+    - echo "$TLSCACERT" > /tmp/ca.pem
+    - echo "$TLSCERT" > /tmp/cert.pem
+    - echo "$TLSKEY" > /tmp/key.pem
+    ##- echo using DOCKER_HOST=$DOCKER_HOST
+    #- docker-machine create -d pwd node1
+    #- eval `docker-machine env node1 --shell bash`
+  ##  - docker swarm init --advertise-addr eth0 || true
+##    - docker stack deploy -c traefik.yml traefik
+##    - docker stack ls
   script:
-    - apk add --no-cache curl
-    - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-    - chmod +x ./kubectl
-    - mv ./kubectl /usr/local/bin/kubectl
-    - kubectl config set-cluster nosebit --server="$KUBE_URL" --insecure-skip-tls-verify=true
-    - kubectl config set-credentials admin --username="$KUBE_USER" --password="$KUBE_PASSWORD"
-    - kubectl config set-context default --cluster=nosebit --user=admin
-    - kubectl config use-context default
-    - 'printf "apiVersion: v1\nkind: Secret\n$(kubectl create secret docker-registry gitlab-registry --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD --docker-email=$GITLAB_USER_EMAIL -o yaml --dry-run)" | kubectl apply -f -'
-    - sed 's/_APP_NAME_/'"$CI_PROJECT_NAME"'/g; s/_VERSION_/'"$CI_COMMIT_SHA"'/g' kubernetes.tpl.yml > kubernetes.yml;
-    - kubectl apply -f kubernetes.yml
-  only:
-    - develop
+    - docker login -u root -p $CI_BUILD_TOKEN $REGISTRY_SLASH
+#    - docker-compose -f docker-compose-gitlab.yml pull
+#    - docker stack deploy vote --with-registry-auth -c docker-stack-traefik.yml
+##    - mkdir -p ~/.docker
+##    - echo $TLSCACERT
+##    - echo "$TLSCACERT" > /tmp/ca.pem
+##    - echo "$TLSCERT" > /tmp/cert.pem
+##    - echo "$TLSKEY" > /tmp/key.pem
+    - echo ${REGISTRY_SLASH-sebmoule/}vote_test$COLON_TAG-$COMMIT_TIME-$CI_PIPELINE_ID
+    - docker stack deploy --compose-file docker-compose.yml stackdemo
+  environment:
+    name: production
+    url: https://example.com
+  when: manual
+    #YOU CAN EXECUTE POST INSTALL TESTS HERE
+
+##Page section for the doc tutorial
+#######################################################
+Deploy to Swarm 02:
+  stage: deploy
+  variables:
+    REGISTRY_SLASH: "$CI_REGISTRY_IMAGE/"
+    COLON_TAG: ":1.0.14"
+#    COLON_TAG: "$VER"
+  before_script:
+    - export SHELL=/bin/bash
+    - echo "Creation of Docker Swarm on PWD"
+    - echo $CI_COMMIT_REF_NAME
+    - echo $CI_BUILD_ID
+    - echo $CI_COMMIT_SHA
+    - echo $CI_JOB_ID
+    - echo $CI_PIPELINE_ID
+    - echo $COLON_TAG
+    - export COMMIT_TIME=$(date +"%Y%m%d")
+    - echo $COMMIT_TIME
+    #You need to set-up DOCKER_HOST_VAR in the Settings of your Gitlab Pipeline in secret variable
+    #- echo using $PWD_URL
+    - export DOCKER_HOST=$DOCKER_HOST_VAR
+    - echo using DOCKER_HOST=$DOCKER_HOST
+    #- docker-machine create -d pwd node1
+    #- eval `docker-machine env node1 --shell bash`
+  ##  - docker swarm init --advertise-addr eth0 || true
+##    - docker stack deploy -c traefik.yml traefik
+    - docker stack ls
+  script:
+    - docker login -u root -p $CI_BUILD_TOKEN $REGISTRY_SLASH
+#    - docker-compose -f docker-compose-gitlab.yml pull
+##    - docker stack deploy vote --with-registry-auth -c docker-stack-traefik.yml
+    - echo ${REGISTRY_SLASH-sebmoule/}vote_test$COLON_TAG-$COMMIT_TIME-$CI_PIPELINE_ID
+    - docker stack deploy --compose-file docker-compose.yml stackdemo
+  environment:
+    name: production
+    url: https://example.com
+  when: manual
