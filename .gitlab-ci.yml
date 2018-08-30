@@ -47,7 +47,7 @@ Build & Push to Registry 01:
     #(maybe not enough memory.) so I don't build it here..
     - docker info
     - docker build -t ${REGISTRY_SLASH-sebmoule/}web:v1.0.$CI_PIPELINE_ID .
-    - docker push $REGISTRY_SLASH
+    - docker push ${REGISTRY_SLASH-sebmoule/}web:v1.0.$CI_PIPELINE_ID
   when: manual
 #######################################################
 
