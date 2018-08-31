@@ -65,18 +65,18 @@ Deploy to Swarm 01:
     - mv ./kubectl /usr/local/bin/kubectl
     #- kubectl config --kubeconfig=/tmp/config-demo set-cluster kubernetes --server="$KUBE_URL" --certificate-authority=
     
-    - kubectl config --kubeconfig=/tmp/config-demo set-cluster kubernetes --server="$KUBE_URL" --certificate-authority="$certificate_authority_data"
+    - kubectl config set-cluster kubernetes --server="$KUBE_URL" --certificate-authority="$certificate_authority_data"
     #- kubectl config set-credentials admin --username="$KUBE_USER" --password="$KUBE_PASSWORD"
-    - kubectl config --kubeconfig=/tmp/config-demo set-credentials kubernetes-admin --client-certificate="$client_certificate_data" --client-key="$client_key_data"
-    - kubectl config --kubeconfig=/tmp/config-demo set-context kubernetes-admin@kubernetes --cluster=kubernetes --user=kubernetes-admin
+    - kubectl config set-credentials kubernetes-admin --client-certificate="$client_certificate_data" --client-key="$client_key_data"
+    - kubectl config set-context kubernetes-admin@kubernetes --cluster=kubernetes --user=kubernetes-admin
     - echo "$certificate_authority_data"
     
-    - sed -i 's/\/builds\/root\/kube-test\///g' /tmp/config-demo
-    - cat /tmp/config-demo
-    - sed -i 's/certificate-authority/certificate-authority-data/g' /tmp/config-demo
-    - sed -i 's/client-certificate/client-certificate-data/g' /tmp/config-demo
-    - sed -i 's/client-key/client-key-data/g' /tmp/config-demo
-    - cat /tmp/config-demo
+    - sed -i 's/\/builds\/root\/kube-test\///g' /root/.kube/config
+    - cat /root/.kube/config
+    - sed -i 's/certificate-authority/certificate-authority-data/g' /root/.kube/config
+    - sed -i 's/client-certificate/client-certificate-data/g' /root/.kube/config
+    - sed -i 's/client-key/client-key-data/g' /root/.kube/config
+    - cat /root/.kube/config
     - kubectl config --kubeconfig=/tmp/config-demo use-context kubernetes-admin@kubernetes
     
     - kubectl get node
