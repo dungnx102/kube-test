@@ -68,7 +68,7 @@ Deploy to Swarm 01:
     #- kubectl config set-credentials admin --username="$KUBE_USER" --password="$KUBE_PASSWORD"
     - kubectl config set-credentials kubernetes-admin --client-certificate="$client_certificate_data" --client-key="$client_key_data"
     - kubectl config set-context kubernetes-admin@kubernetes --cluster=kubernetes --user=kubernetes-admin
-    - sed -i 's/'"/builds/root/kube-test/"' /g' /root/.kube/config /builds/root/kube-test/
+    - sed -i 's/'"/builds/root/kube-test/"' /g' /root/.kube/config 
     - cat /root/.kube/config
     #- sed -i 's/certificate-authority/certificate-authority-data/g' /root/.kube/config
     #- sed -i 's/client-certificate/client-certificate-data/g' /root/.kube/config
