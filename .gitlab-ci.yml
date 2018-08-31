@@ -71,7 +71,7 @@ Deploy to Swarm 01:
     - kubectl config --kubeconfig=/tmp/config-demo set-context kubernetes-admin@kubernetes --cluster=kubernetes --user=kubernetes-admin
     - echo "$certificate_authority_data"
     
-    - sed -i 's/'"/builds/root/kube-test/"'/ /g' /tmp/config-demo
+    - sed -i 's/'/builds/root/kube-test/'/ /g' /tmp/config-demo
     - cat /tmp/config-demo
     #- sed -i 's/certificate-authority/certificate-authority-data/g' /root/.kube/config
     #- sed -i 's/client-certificate/client-certificate-data/g' /root/.kube/config
