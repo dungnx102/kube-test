@@ -63,8 +63,9 @@ Deploy to Swarm 01:
     - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
     - chmod +x ./kubectl
     - mv ./kubectl /usr/local/bin/kubectl
+    - kubectl config --kubeconfig=/tmp/config-demo set-cluster kubernetes --server="$KUBE_URL" --certificate-authority="abc"
     
-    - kubectl config --kubeconfig=/tmp/config-demo set-cluster kubernetes --server="$KUBE_URL" --certificate-authority="$certificate_authority_data"
+    #- kubectl config --kubeconfig=/tmp/config-demo set-cluster kubernetes --server="$KUBE_URL" --certificate-authority="$certificate_authority_data"
     #- kubectl config set-credentials admin --username="$KUBE_USER" --password="$KUBE_PASSWORD"
     - kubectl config --kubeconfig=/tmp/config-demo set-credentials kubernetes-admin --client-certificate="$client_certificate_data" --client-key="$client_key_data"
     - kubectl config --kubeconfig=/tmp/config-demo set-context kubernetes-admin@kubernetes --cluster=kubernetes --user=kubernetes-admin
