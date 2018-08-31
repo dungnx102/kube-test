@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: test
-          image: registry.gitlab.com/brunomacf/kube-test:_VERSION_
+          image: ${REGISTRY_SLASH-sebmoule/}web:v1.0.$CI_PIPELINE_ID
           imagePullPolicy: Always
           ports:
             - containerPort: 80
