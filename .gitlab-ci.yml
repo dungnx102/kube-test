@@ -63,21 +63,21 @@ Deploy to Swarm 01:
     - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
     - chmod +x ./kubectl
     - mv ./kubectl /usr/local/bin/kubectl
-    - kubectl config --kubeconfig=/tmp/config-demo set-cluster kubernetes --server="$KUBE_URL" --certificate-authority=
+    #- kubectl config --kubeconfig=/tmp/config-demo set-cluster kubernetes --server="$KUBE_URL" --certificate-authority=
     
-    #- kubectl config --kubeconfig=/tmp/config-demo set-cluster kubernetes --server="$KUBE_URL" --certificate-authority="$certificate_authority_data"
+    - kubectl config --kubeconfig=/tmp/config-demo set-cluster kubernetes --server="$KUBE_URL" --certificate-authority="$certificate_authority_data"
     #- kubectl config set-credentials admin --username="$KUBE_USER" --password="$KUBE_PASSWORD"
     - kubectl config --kubeconfig=/tmp/config-demo set-credentials kubernetes-admin --client-certificate="$client_certificate_data" --client-key="$client_key_data"
     - kubectl config --kubeconfig=/tmp/config-demo set-context kubernetes-admin@kubernetes --cluster=kubernetes --user=kubernetes-admin
     - echo "$certificate_authority_data"
     
-    - sed -i 's/\/builds\/root\/kube-test\//abc/g' /tmp/config-demo
+    - sed -i 's/\/builds\/root\/kube-test\///g' /tmp/config-demo
     - cat /tmp/config-demo
-    #- sed -i 's/certificate-authority/certificate-authority-data/g' /root/.kube/config
-    #- sed -i 's/client-certificate/client-certificate-data/g' /root/.kube/config
-    #- sed -i 's/client-key/client-key-data/g' /root/.kube/config
-    
-    - kubectl config use-context kubernetes-admin@kubernetes
+    - sed -i 's/certificate-authority/certificate-authority-data/g' /tmp/config-demo
+    - sed -i 's/client-certificate/client-certificate-data/g' /tmp/config-demo
+    - sed -i 's/client-key/client-key-data/g' /tmp/config-demo
+    - cat /tmp/config-demo
+    - kubectl config --kubeconfig=/tmp/config-demo use-context kubernetes-admin@kubernetes
     
     - kubectl get node
     #- 'printf "apiVersion: v1\nkind: Secret\n$(kubectl create secret docker-registry gitlab-registry --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD --docker-email=$GITLAB_USER_EMAIL -o yaml --dry-run)" | kubectl apply -f -'
