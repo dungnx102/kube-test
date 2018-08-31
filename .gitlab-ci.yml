@@ -65,25 +65,25 @@ Deploy to Swarm 01:
     - mv ./kubectl /usr/local/bin/kubectl
     - cat <<-EOF > /tmp/kubeconfig
         apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: $certificate_authority_data
-    server: https://172.16.117.125:6443
-  name: kubernetes
-contexts:
-- context:
-    cluster: kubernetes
-    user: kubernetes-admin
-  name: kubernetes-admin@kubernetes
-current-context: kubernetes-admin@kubernetes
-kind: Config
-preferences: {}
-users:
-- name: kubernetes-admin
-  user:
-    client-certificate-data: $client_certificate_data
-    client-key-data: $client_key_data 
-EOF
+        clusters:
+        - cluster:
+            certificate-authority-data: $certificate_authority_data
+            server: https://172.16.117.125:6443
+        name: kubernetes
+        contexts:
+        - context:
+            cluster: kubernetes
+            user: kubernetes-admin
+          name: kubernetes-admin@kubernetes
+       current-context: kubernetes-admin@kubernetes
+       kind: Config
+       preferences: {}
+       users:
+       - name: kubernetes-admin
+         user:
+           client-certificate-data: $client_certificate_data
+           client-key-data: $client_key_data 
+             EOF
 
     - kubectl config --kubeconfig=/tmp/kubeconfig use-context kubernetes-admin@kubernetes
     
