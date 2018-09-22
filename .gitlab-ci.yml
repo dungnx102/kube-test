@@ -53,7 +53,7 @@ Build & Push to Registry 01:
 
 Deploy to Swarm 01:
   stage: deploy
-  image: alpine
+ # image: alpine
   environment:
     name: develop
   script:
