@@ -44,8 +44,8 @@ Build & Push to Registry 01:
     #At this time gitlab.com shared runner segfault when building the .Net application
     #(maybe not enough memory.) so I don't build it here..
     - docker info
-    - docker build -t ${REGISTRY_SLASH-sebmoule/}web:v1.0 .
-    - docker push ${REGISTRY_SLASH-sebmoule/}web:v1.0
+    - docker build -t ${REGISTRY_SLASH-sebmoule/}web .
+    - docker push ${REGISTRY_SLASH-sebmoule/}web
   when: manual
 #######################################################
 
