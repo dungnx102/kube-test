@@ -53,6 +53,9 @@ Build & Push to Registry 01:
 
 Deploy to Swarm 01:
   stage: deploy
+  variables:
+    REGISTRY_SLASH: "$CI_REGISTRY_IMAGE/"
+
  # image: alpine
   environment:
     name: develop
