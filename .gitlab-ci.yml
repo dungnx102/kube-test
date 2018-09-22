@@ -3,8 +3,6 @@
 variables:
   DOCKER_DRIVER: overlay
   REGISTRY_SLASH: "$CI_REGISTRY_IMAGE/"
-#  VER: ":1.0.12"
-  COLON_TAG: ":1.0.14"
 
 # image: registry.gitlab.com/build-images/docker:latest
 
