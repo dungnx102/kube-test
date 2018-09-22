@@ -18,7 +18,8 @@ spec:
     spec:
       containers:
         - name: test
-          image: ${REGISTRY_SLASH-sebmoule/}web:v1.0
+        #  image: ${REGISTRY_SLASH-sebmoule/}web:v1.0
+          image: gitlab.truecloud.top:4567/root/kube-test/web
           imagePullPolicy: Always
           ports:
             - containerPort: 80
