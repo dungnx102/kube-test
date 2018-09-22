@@ -85,6 +85,7 @@ Deploy to Swarm 01:
     - echo $CI_PROJECT_NAME
     - echo $CI_COMMIT_SHA
     - sed 's/_APP_NAME_/'"$CI_PROJECT_NAME"'/g; s/_VERSION_/'"$CI_COMMIT_SHA"'/g' kubernetes.tpl.yml > kubernetes.yml;
+    - echo $REGISTRY_SLASH
     - docker login -u root -p $CI_BUILD_TOKEN $REGISTRY_SLASH
     - kubectl apply -f kubernetes.yml
   when: manual
