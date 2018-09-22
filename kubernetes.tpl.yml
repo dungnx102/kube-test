@@ -32,6 +32,7 @@ metadata:
     app: _APP_NAME_
 spec:
 #  type: LoadBalancer
+  type: nodePort
   ports:
     - port: 80
       targetPort: 80
