@@ -84,12 +84,12 @@ Deploy to Swarm 01:
     - kubectl version
     - kubectl get node
     - kubectl get pod
-    - 'printf "apiVersion: v1\nkind: Secret\n$(kubectl create secret docker-registry gitlab-registry --docker-server=$CI_REGISTRY --docker-username=$CI_REGISTRY_USER --docker-password=$CI_REGISTRY_PASSWORD --docker-email=$GITLAB_USER_EMAIL -o yaml --dry-run)" | kubectl apply -f -'
+    - 'printf "apiVersion: v1\nkind: Secret\n$(kubectl create secret docker-registry gitlab-registry --docker-server=$REGISTRY_SLASH --docker-username=root --docker-password=$CI_BUILD_TOKEN -o yaml --dry-run)" | kubectl apply -f -'
     - echo $CI_PROJECT_NAME
     - echo $CI_COMMIT_SHA
     - sed 's/_APP_NAME_/'"$CI_PROJECT_NAME"'/g; s/_VERSION_/'"$CI_COMMIT_SHA"'/g' kubernetes.tpl.yml > kubernetes.yml;
     - echo $REGISTRY_SLASH
-    - docker login -u root -p $CI_BUILD_TOKEN $REGISTRY_SLASH
+#    - docker login -u root -p $CI_BUILD_TOKEN $REGISTRY_SLASH
     - kubectl apply -f kubernetes.yml
   when: manual
 #######################################################
