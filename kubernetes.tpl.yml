@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: test
-          image: ${REGISTRY_SLASH-sebmoule/}web:v1.0.$CI_PIPELINE_ID
+          image: ${REGISTRY_SLASH-sebmoule/}web:v1.0
           imagePullPolicy: Always
           ports:
             - containerPort: 80
