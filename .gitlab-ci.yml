@@ -91,6 +91,7 @@ Deploy to Swarm 01:
     - echo $REGISTRY_SLASH
 #    - docker login -u root -p $CI_BUILD_TOKEN $REGISTRY_SLASH
     - kubectl apply -f kubernetes.yml
+    - kubectl get pod
   when: manual
 #######################################################
 Deploy to Swarm 02:
