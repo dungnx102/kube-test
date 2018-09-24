@@ -9,7 +9,7 @@ spec:
   selector:
     matchLabels:
       app: _APP_NAME_
-  
+
   # Pod template
   template:
     metadata:
@@ -19,7 +19,7 @@ spec:
       containers:
         - name: test
         #  image: ${REGISTRY_SLASH-sebmoule/}web:v1.0
-          image: gitlab.truecloud.top:4567/root/kube-test/web
+          image: gitlab.truecloud.top:4567/root/kube-test/web:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -29,7 +29,7 @@ spec:
               port: 80
             initialDelaySeconds: 5
             periodSeconds: 5
-            successThreshold: 1    
+            successThreshold: 1
       imagePullSecrets:
         - name: gitlab-registry
 ---
