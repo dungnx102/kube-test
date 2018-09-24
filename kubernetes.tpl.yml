@@ -5,6 +5,11 @@ metadata:
   labels:
     app: _APP_NAME_
 spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   replicas: 4
   selector:
     matchLabels:

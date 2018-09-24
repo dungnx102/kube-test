@@ -90,7 +90,7 @@ Deploy to K8S:
     - sed 's/_APP_NAME_/'"$CI_PROJECT_NAME"'/g; s/_VERSION_/'"$CI_COMMIT_SHA"'/g' kubernetes.tpl.yml > kubernetes.yml;
     - echo $REGISTRY_SLASH
 #    - docker login -u root -p $CI_BUILD_TOKEN $REGISTRY_SLASH
-    - kubectl delete deployment kube-test
+#    - kubectl delete deployment kube-test
     - kubectl apply -f kubernetes.yml
     - kubectl get pod -o wide
   when: manual
