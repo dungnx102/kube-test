@@ -13,7 +13,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 0
-      maxSurge: 2    
+      maxSurge: 2
 
   # Pod template
   template:
@@ -24,7 +24,7 @@ spec:
       containers:
         - name: test
         #  image: ${REGISTRY_SLASH-sebmoule/}web:v1.0
-          image: gitlab.truecloud.top:4567/root/kube-test/web:latest
+          image: gitlab.truecloud.top:4567/root/kube-test/web-_VERSION_
           imagePullPolicy: Always
           ports:
             - containerPort: 80

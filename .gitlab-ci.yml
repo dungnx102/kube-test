@@ -44,8 +44,8 @@ Build & Push to Registry 01:
     #At this time gitlab.com shared runner segfault when building the .Net application
     #(maybe not enough memory.) so I don't build it here..
     - docker info
-    - docker build -t ${REGISTRY_SLASH-sebmoule/}web .
-    - docker push ${REGISTRY_SLASH-sebmoule/}web
+    - docker build -t ${REGISTRY_SLASH-sebmoule/}web-$CI_PIPELINE_ID .
+    - docker push ${REGISTRY_SLASH-sebmoule/}web-$CI_PIPELINE_ID
   when: manual
 #######################################################
 
@@ -87,7 +87,7 @@ Deploy to K8S:
     - 'printf "apiVersion: v1\nkind: Secret\n$(kubectl create secret docker-registry gitlab-registry --docker-server=$REGISTRY_SLASH --docker-username=root --docker-password=$CI_BUILD_TOKEN -o yaml --dry-run)" | kubectl apply -f -'
     - echo $CI_PROJECT_NAME
     - echo $CI_COMMIT_SHA
-    - sed 's/_APP_NAME_/'"$CI_PROJECT_NAME"'/g; s/_VERSION_/'"$CI_COMMIT_SHA"'/g' kubernetes.tpl.yml > kubernetes.yml;
+    - sed 's/_APP_NAME_/'"$CI_PROJECT_NAME"'/g; s/_VERSION_/'"$CI_PIPELINE_ID"'/g' kubernetes.tpl.yml > kubernetes.yml;
     - echo $REGISTRY_SLASH
 #    - docker login -u root -p $CI_BUILD_TOKEN $REGISTRY_SLASH
 #    - kubectl delete deployment kube-test
